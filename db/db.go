@@ -14,11 +14,12 @@ func ConnectToDb() *gorm.DB {
 
 	db, err := gorm.Open(postgres.Open(cfg.PgUrl), &gorm.Config{})
 	if err != nil {
-		fmt.Println(cfg.PgUrl)
-		fmt.Println(err)
 		panic(err)
 	}
-	fmt.Println("Successfully connected to db!")
+
+	if db != nil {
+		fmt.Println("Successfully connected to db!")
+	}
 
 	return db
 }

@@ -6,28 +6,6 @@ import (
 	"net/http"
 )
 
-//func RegisterUser(w http.ResponseWriter, req *http.Request) {
-//	var user models.User
-//	err := json.NewDecoder(req.Body).Decode(&user)
-//	if err != nil {
-//		http.Error(w, err.Error(), http.StatusBadRequest)
-//		return
-//	}
-//
-//}
-//
-//func LoginUser(w http.ResponseWriter, req *http.Request) {
-//
-//}
-//
-//func LogoutUser(w http.ResponseWriter, req *http.Request) {
-//
-//}
-//
-//func ResetUserPassword(w http.ResponseWriter, req *http.Request) {
-//
-//}
-
 func (h *UserHandler) Register(w http.ResponseWriter, req *http.Request) {
 	var user models.User
 	err := json.NewDecoder(req.Body).Decode(&user)
@@ -42,6 +20,7 @@ func (h *UserHandler) Register(w http.ResponseWriter, req *http.Request) {
 	}
 }
 
+// this function redirects request to certain handler method, it is necessary to extend it if new handler method is introduced
 func (h UserHandler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	path := req.URL.Path
 	switch path {
