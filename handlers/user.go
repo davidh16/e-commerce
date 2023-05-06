@@ -35,7 +35,7 @@ func (h *UserHandler) Register(w http.ResponseWriter, req *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	_, err = h.s.Create(user)
+	err = h.s.Create(user)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
@@ -43,4 +43,15 @@ func (h *UserHandler) Register(w http.ResponseWriter, req *http.Request) {
 }
 
 func (h UserHandler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
+	path := req.URL.Path
+	switch path {
+	case "/register":
+		if req.Method == http.MethodPost {
+			h.Register(w, req)
+		} else {
+			http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		}
+	default:
+		http.Error(w, "Not found", http.StatusNotFound)
+	}
 }
