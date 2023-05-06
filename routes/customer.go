@@ -5,6 +5,6 @@ import (
 	"sync"
 )
 
-func setupCustomerRoutes(r mux.Router, wg *sync.WaitGroup) {
+func setupCustomerRoutes(r *mux.Router, wg *sync.WaitGroup) {
 	defer wg.Done()
 }

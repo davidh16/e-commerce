@@ -6,7 +6,7 @@ import (
 	"sync"
 )
 
-func setupCategoryRoutes(r mux.Router, wg *sync.WaitGroup) {
+func setupCategoryRoutes(r *mux.Router, wg *sync.WaitGroup) {
 	r.HandleFunc("/category", handlers.CreateCategory).Methods("POST")
 	r.HandleFunc("/category/update/{id}", handlers.UpdateCategory).Methods("POST")
 	r.HandleFunc("/category/delete/{id}", handlers.DeleteCategory).Methods("DELETE")

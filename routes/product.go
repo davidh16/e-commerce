@@ -6,7 +6,7 @@ import (
 	"sync"
 )
 
-func setupProductRoutes(r mux.Router, wg *sync.WaitGroup) {
+func setupProductRoutes(r *mux.Router, wg *sync.WaitGroup) {
 	r.HandleFunc("/products", handlers.ListProducts).Methods("GET")
 	r.HandleFunc("/product/{id}", handlers.GetProduct).Methods("GET")
 	r.HandleFunc("/product", handlers.CreateProduct).Methods("POST")

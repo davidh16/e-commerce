@@ -7,11 +7,11 @@ import (
 
 func NewRouter() *mux.Router {
 
-	r := *mux.NewRouter()
+	r := mux.NewRouter()
 
 	g := sync.WaitGroup{}
 
-	//for efficient code, it is necessary to define a number of go routines that are going ot be performed
+	//for efficient code, it is necessary to define a number of go routines that are going to be performed
 	g.Add(5)
 
 	// setup of all routes that are available
@@ -21,9 +21,9 @@ func NewRouter() *mux.Router {
 	go setupCategoryRoutes(r, &g)
 	go setupCustomerRoutes(r, &g)
 	go setupOrderRoutes(r, &g)
-	go setupUserRoutes(&r, &g)
+	go setupUserRoutes(r, &g)
 
 	g.Wait()
 
-	return &r
+	return r
 }
