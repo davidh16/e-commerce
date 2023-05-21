@@ -12,7 +12,7 @@ type userRepository struct {
 
 func NewRepository(db *gorm.DB) *userRepository {
 	return &userRepository{
-		Postgres: orm.NewPostgres[models.User](*db),
+		Postgres: orm.NewPostgres[models.User](db),
 	}
 }
 

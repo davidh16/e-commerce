@@ -13,7 +13,7 @@ func (h *UserHandler) Register(w http.ResponseWriter, req *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	err = h.s.Create(user)
+	_, err = h.service.Create(user)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return

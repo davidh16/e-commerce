@@ -5,15 +5,15 @@ import (
 	"fmt"
 )
 
-func (s Service) Create(user models.User) error {
+func (s Service) Create(user models.User) (*models.User, error) {
 	err := user.Validate()
 	if err != nil {
-		return err
+		return nil, err
 	}
-	err = s.repository.Create(user)
+	_, err = s.repository.Create(user)
 	if err != nil {
 		fmt.Println(err)
-		return err
+		return nil, err
 	}
-	return err
+	return &user, err
 }

@@ -13,7 +13,7 @@ type postgres[M any] struct {
 	BaseInterface
 }
 
-func NewPostgres[M any](db gorm.DB) postgres[M] {
+func NewPostgres[M any](db *gorm.DB) postgres[M] {
 
 	b := NewBase(db)
 
