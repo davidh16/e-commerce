@@ -4,20 +4,19 @@ import (
 	"gorm.io/gorm"
 )
 
-type Postgres[M any] interface {
-	BaseInterface
-	Methods[M]
-}
-
-type postgres[M any] struct {
+type Postgres interface {
 	BaseInterface
 }
 
-func NewPostgres[M any](db *gorm.DB) postgres[M] {
+type postgres struct {
+	BaseInterface
+}
+
+func NewPostgres(db *gorm.DB) postgres {
 
 	b := NewBase(db)
 
-	return postgres[M]{
+	return postgres{
 		BaseInterface: b,
 	}
 }

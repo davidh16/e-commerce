@@ -1,11 +1,12 @@
 package routes
 
 import (
+	"e-commerce/handlers"
 	"github.com/gorilla/mux"
 	"sync"
 )
 
-func NewRouter() *mux.Router {
+func NewRouter(userHandler *handlers.UserHandler) *mux.Router {
 
 	r := mux.NewRouter()
 
@@ -21,7 +22,7 @@ func NewRouter() *mux.Router {
 	go setupCategoryRoutes(r, &g)
 	go setupCustomerRoutes(r, &g)
 	go setupOrderRoutes(r, &g)
-	go setupUserRoutes(r, &g)
+	go setupUserRoutes(r, &g, userHandler)
 
 	g.Wait()
 

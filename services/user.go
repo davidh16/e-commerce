@@ -10,10 +10,10 @@ func (s Service) Create(user models.User) (*models.User, error) {
 	if err != nil {
 		return nil, err
 	}
-	_, err = s.repository.Create(user)
-	if err != nil {
-		fmt.Println(err)
-		return nil, err
+	result := s.repository.Db().Create(user)
+	if result.Error != nil {
+		fmt.Println(result.Error)
+		return nil, result.Error
 	}
-	return &user, err
+	return &user, result.Error
 }

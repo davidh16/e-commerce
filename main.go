@@ -24,9 +24,9 @@ func main() {
 	// creating service and passing repository to it
 	svc := services.NewService(repo)
 
-	_ = handlers.NewUserHandler(svc)
+	userHandler := handlers.NewUserHandler(svc)
 
-	r := routes.NewRouter()
+	r := routes.NewRouter(userHandler)
 
 	_ = fmt.Sprintf("server listening on port %s", cfg.Port)
 
