@@ -1,20 +1,11 @@
 package repository
 
-import (
-	"e-commerce/orm"
-	"gorm.io/gorm"
-)
+import "e-commerce/models"
 
-type repository struct {
-	orm.Postgres
-}
-
-func NewRepository(db *gorm.DB) *repository {
-	return &repository{
-		Postgres: orm.NewPostgres(db),
+func (r *repository) Create(user models.User) (*models.User, error) {
+	result := r.Db().Create(&user)
+	if result.Error != nil {
+		return nil, result.Error
 	}
-}
-
-type Repository interface {
-	orm.Postgres
+	return &user, nil
 }
