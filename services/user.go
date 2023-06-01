@@ -10,11 +10,9 @@ func (s Service) Create(user models.User) (*models.User, error) {
 		return nil, err
 	}
 
-	//result := s.repository.Db().Create(&user)
-	//if result.Error != nil {
-	//	return nil, result.Error
-	//}
-	//return &user, nil
-
-	return s.repository.Create(user)
+	result := s.repository.Db().Create(&user)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return &user, nil
 }

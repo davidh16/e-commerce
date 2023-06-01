@@ -1,15 +1,13 @@
 package routes
 
 import (
-	"e-commerce/handlers"
+	"e-commerce/controller"
 	"github.com/gorilla/mux"
-	"sync"
 )
 
-func setupUserRoutes(r *mux.Router, wg *sync.WaitGroup, userHandler *handlers.UserHandler) {
-	r.Handle("/register", userHandler).Methods("POST")
+func setupUserRoutes(r *mux.Router, c controller.Controller) {
+	r.Handle("/register", c.HandleSomething()).Methods("POST")
 	//r.HandleFunc("/login", handlers.LoginUser).Methods("POST")
 	//r.HandleFunc("/logout", handlers.LogoutUser).Methods("POST")
 	//r.HandleFunc("/reset-password", handlers.ResetUserPassword).Methods("POST")
-	defer wg.Done()
 }

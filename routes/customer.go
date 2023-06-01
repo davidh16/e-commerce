@@ -1,10 +1,9 @@
 package routes
 
 import (
+	"e-commerce/controller"
 	"github.com/gorilla/mux"
-	"sync"
 )
 
-func setupCustomerRoutes(r *mux.Router, wg *sync.WaitGroup) {
-	defer wg.Done()
+func setupCustomerRoutes(r *mux.Router, c controller.Controller) {
 }
