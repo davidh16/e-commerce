@@ -5,5 +5,5 @@ type Order struct {
 	Items         []Product
 	OrderTotal    float64
 	ShippingAddr  Address
-	PaymentMethod PaymentMethod
+	PaymentMethod PaymentInfo
 }

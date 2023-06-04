@@ -8,10 +8,12 @@ import (
 	"e-commerce/routes"
 	"e-commerce/services"
 	"fmt"
+	"github.com/slayer/autorestart"
 	"net/http"
 )
 
 func main() {
+	autorestart.StartWatcher()
 
 	var cfg = config.GetConfig()
 
@@ -27,10 +29,10 @@ func main() {
 	// creating controller and injecting service in it
 	ctrl := controller.NewController(svc)
 
+	_ = fmt.Sprintf("server listening on port %s", cfg.Port)
+
 	// creating router and injecting controller in it so all routes have access to handling functions of controller
 	r := routes.NewRouter(ctrl)
-
-	_ = fmt.Sprintf("server listening on port %s", cfg.Port)
 
 	err := http.ListenAndServe(cfg.Port, r)
 	if err != nil {
