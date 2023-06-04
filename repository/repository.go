@@ -5,12 +5,16 @@ import (
 	"gorm.io/gorm"
 )
 
-type Repository struct {
+type repository struct {
 	database.BaseInterface
 }
 
-func NewRepository(db *gorm.DB) Repository {
-	return Repository{
+func NewRepository(db *gorm.DB) repository {
+	return repository{
 		BaseInterface: database.NewBase(db),
 	}
+}
+
+type Repository interface {
+	database.BaseInterface
 }

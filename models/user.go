@@ -2,31 +2,32 @@ package models
 
 import (
 	"github.com/go-playground/validator/v10"
+	"time"
 )
 
 type User struct {
-	Uuid     string `json:"uuid" gorm:"unique;type:uuid; column:uuid;default:uuid_generate_v4()"`
-	Username string `json:"username"`
-	Email    string `json:"email"`
-	Password string `json:"password"`
-	//ShippingAddressID string        `json:"shipping_address"`
+	Uuid            string `json:"uuid" gorm:"unique;type:uuid; column:uuid;default:uuid_generate_v4()"`
+	Username        string `json:"username"`
+	Email           string `json:"email"`
+	Password        string `json:"password"`
+	ShippingAddress string `json:"shipping_address"`
 	//PaymentInfoID     PaymentMethod `json:"payment_info" gorm:"embedded"`
 	//OrderHistory      []string      `json:"order_history"`
 	//Wishlist          []string      `json:"wishlist"`
 	//ShoppingCart      []string      `json:"shopping_cart"`
-	//AccountStatus     string        `json:"account_status"`
-	//CreatedAt         time.Time     `json:"created_at"`
+	AccountStatus string    `json:"account_status"`
+	CreatedAt     time.Time `json:"created_at"`
 }
 
 type PaymentMethod struct {
-	CardholderName string
+	CardHolderName string
 	CardNumber     string
 	ExpiryMonth    uint8
 	ExpiryYear     uint16
 	CVV            string
 }
 
-func (u User) Validate() error {
+func (u *User) Validate() error {
 	v := validator.New()
 	v.RegisterStructValidationMapRules(ValidationRules, User{})
 	err := v.Struct(u)
@@ -43,5 +44,5 @@ var ValidationRules = map[string]string{
 }
 
 func (u *User) TableName() string {
-	return "test"
+	return "users"
 }
