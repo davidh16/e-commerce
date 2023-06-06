@@ -27,7 +27,7 @@ func main() {
 	svc := services.NewService(repo)
 
 	// creating controller and injecting service in it
-	ctrl := controller.NewController(svc)
+	ctrl := controller.NewController(svc, cfg)
 
 	_ = fmt.Sprintf("server listening on port %s", cfg.Port)
 

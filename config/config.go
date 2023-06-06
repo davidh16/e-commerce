@@ -10,8 +10,9 @@ import (
 // Config struct can be expanded if more env variables are introduced
 
 type Config struct {
-	PgUrl string `env:"PG_URL"`
-	Port  string `env:"PORT"`
+	PgUrl     string `env:"PG_URL"`
+	Port      string `env:"PORT"`
+	SecretKey string `env:"SECRET_KEY"`
 }
 
 func GetConfig() Config {

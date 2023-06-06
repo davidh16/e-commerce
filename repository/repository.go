@@ -2,6 +2,7 @@ package repository
 
 import (
 	database "e-commerce/db"
+	"e-commerce/models"
 	"gorm.io/gorm"
 )
 
@@ -17,4 +18,5 @@ func NewRepository(db *gorm.DB) repository {
 
 type Repository interface {
 	database.BaseInterface
+	FindUserByEmailAddress(emailAddress string) (*models.User, error)
 }

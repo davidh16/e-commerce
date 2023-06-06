@@ -7,11 +7,7 @@ CREATE TABLE IF NOT EXISTS users (
      password varchar,
      account_status int not null ,
      shipping_address uuid,
-     card_holder_name varchar,
-     card_number varchar,
-     expiry_month int,
-     expiry_year int,
-     cvv varchar
+     payment_info uuid
 );
 
 CREATE UNIQUE INDEX unique_uuid on users(uuid);
