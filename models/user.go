@@ -2,6 +2,8 @@ package models
 
 import (
 	"github.com/go-playground/validator/v10"
+	"golang.org/x/crypto/bcrypt"
+	"gorm.io/gorm"
 	"time"
 )
 
@@ -35,4 +37,18 @@ var ValidationRules = map[string]string{
 
 func (u *User) TableName() string {
 	return "users"
+}
+
+// BeforeCreate - Gorm hook that encrypts password before saving user to database
+func (u *User) BeforeCreate(tx *gorm.DB) error {
+
+	// Hash the password
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(u.Password), 20)
+	if err != nil {
+		return err
+	}
+
+	u.Password = string(hashedPassword)
+
+	return nil
 }

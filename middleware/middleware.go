@@ -1,5 +1,7 @@
 package middleware
 
+import "net/http"
+
 // a place to declare all middleware functions
 // every middleware function accepts http.HandlerFunc as an input and returns the same by calling passed function with ServeHTTP method
 
@@ -11,3 +13,9 @@ package middleware
 //		 next.ServeHTTP(w, r)
 //	 }
 // }
+
+func AuthentificationMiddleware(next http.HandlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, req *http.Request) {
+
+	}
+}

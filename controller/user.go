@@ -4,6 +4,7 @@ import (
 	"e-commerce/models"
 	"encoding/json"
 	"errors"
+	"golang.org/x/sync/errgroup"
 	"net/http"
 )
 
@@ -52,16 +53,58 @@ func (c Controller) Login(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	// generating token for authorized user
-	token, err := c.service.GenerateJWT(dbUser.Uuid)
+	var accessToken string
+	var refreshToken string
+
+	g := new(errgroup.Group)
+	g.Go(func() error {
+		// generating access token for authenticated user
+		accessToken, err = c.service.GenerateJWT(dbUser.Uuid, false)
+		if err != nil {
+			return err
+		}
+
+		// saving access token in memory (redis)
+		err = c.service.SaveAccessToken(dbUser.Uuid, accessToken)
+		if err != nil {
+			return err
+		}
+
+		return nil
+	})
+
+	g.Go(func() error {
+		// generating refresh token for authenticated user
+		refreshToken, err = c.service.GenerateJWT(dbUser.Uuid, true)
+		if err != nil {
+			return err
+		}
+
+		// saving refresh token in database
+		err = c.service.SaveRefreshToken(refreshToken)
+		if err != nil {
+			return err
+		}
+
+		return nil
+	})
+
+	if err = g.Wait(); err != nil {
+		returnResponse(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	// creating  json response
+	response, err := json.Marshal(map[string]string{
+		"access_token":  accessToken,
+		"refresh_token": refreshToken,
+	})
 	if err != nil {
 		returnResponse(w, http.StatusInternalServerError, err)
 		return
 	}
 
-	// writing a token in body of response message
 	w.WriteHeader(http.StatusOK)
-
-	w.Write([]byte(token))
+	w.Write(response)
 	return
 }

@@ -19,4 +19,13 @@ func NewRepository(db *gorm.DB) repository {
 type Repository interface {
 	database.BaseInterface
 	FindUserByEmailAddress(emailAddress string) (*models.User, error)
+	SaveToken(token string) error
+}
+
+func (r repository) SaveToken(token string) error {
+	result := r.Db().Table("refresh_tokens").Create(token)
+	if result.Error != nil {
+		return result.Error
+	}
+	return nil
 }

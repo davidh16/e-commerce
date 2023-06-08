@@ -17,6 +17,8 @@ func main() {
 
 	var cfg = config.GetConfig()
 
+	// connect to db and get the redis instance
+	redis := db.ConnectToRedis()
 	// connect to db and get the postgres instance
 	postgres := db.ConnectToDb()
 
@@ -24,7 +26,7 @@ func main() {
 	repo := repository.NewRepository(postgres)
 
 	// creating service and injecting repository in it
-	svc := services.NewService(repo)
+	svc := services.NewService(redis, repo)
 
 	// creating controller and injecting service in it
 	ctrl := controller.NewController(svc, cfg)
