@@ -17,6 +17,6 @@ func ConnectToRedis() *redis.Client {
 	if err != nil {
 		panic(fmt.Sprintf("Failed to connect to Redis: %s", err))
 	}
-	fmt.Println("Successfully connected to Redis")
+	fmt.Println("Successfully connected to Redis !")
 	return client
 }
