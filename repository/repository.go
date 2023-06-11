@@ -20,6 +20,7 @@ type Repository interface {
 	database.BaseInterface
 	FindUserByEmailAddress(emailAddress string) (*models.User, error)
 	SaveToken(token string) error
+	Create(user models.User) (*models.User, error)
 }
 
 func (r repository) SaveToken(token string) error {
