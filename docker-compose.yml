@@ -1,7 +1,23 @@
 version: "3.9"
 
 services:
+  postgres:
+    container_name: e-commerce-postgres
+    image: postgres
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_NAME: "postgres"
+      POSTGRES_USER: "root"
+      POSTGRES_PASSWORD: "root"
+      POSTGRES_DB: "postgres"
+  redis:
+    container_name: e-commerce-redis
+    image: redis
+    ports:
+      - "6379:6379"
   e-commerce:
+    container_name: e-commerce
     build:
       context: .
       dockerfile: Dockerfile.dev
@@ -9,16 +25,3 @@ services:
       - "8123:8080"
     volumes:
       - /Users/davidhorvat/GolandProjects/e-commerce:/app
-  postgres:
-    image: postgres
-    ports:
-      - "5433:5432"
-    environment:
-      POSTGRES_NAME: "davidhorvat"
-      POSTGRES_USER: "root"
-      POSTGRES_PASSWORD: "root"
-      POSTGRES_DB: "postgres"
-  redis:
-    image: redis
-    ports:
-      - "6379:6379"
