@@ -25,7 +25,7 @@ drop-database:
 create-migration:
 	$(eval NAME := $(filter-out $@,$(MAKECMDGOALS)))
 	$(eval FILENAME := $(shell date +'%Y%m%d%H%M%S')_$(name))
-	./migration_template.sh $(FILENAME) $(name)
+	./dev-tools/migration_template.sh $(FILENAME) $(name)
 
 migrate:
 	PGPASSWORD=$(DB_PASSWORD) migrate -path ./migrations -database "postgres://$(DB_USER)@$(DB_HOST):$(DB_PORT)/$(DB_NAME)?sslmode=disable" up
@@ -33,5 +33,17 @@ migrate:
 rollback:
 	PGPASSWORD=$(DB_PASSWORD) migrate -path ./migrations -database "postgres://$(DB_USER)@$(DB_HOST):$(DB_PORT)/$(DB_NAME)?sslmode=disable" down -all
 
-run:
-	air
+up:
+	docker-compose -f docker-compose-db.yml up --build -d
+	docker-compose -f docker-compose.yml  up --build
+
+down:
+	docker-compose -f docker-compose-db.yml stop
+	docker-compose -f docker-compose.yml down
+	docker-compose -f docker-compose-db.yml down
+
+stop:
+	docker stop e-commerce
+
+start:
+	docker start e-commerce

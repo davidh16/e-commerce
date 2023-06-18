@@ -31,8 +31,8 @@ func (u *User) Validate() error {
 }
 
 var ValidationRules = map[string]string{
-	"Email":    "required,email",
-	"Password": "required,min=8",
+	"EmailAddress": "required,email",
+	"Password":     "required,min=8",
 }
 
 func (u *User) TableName() string {

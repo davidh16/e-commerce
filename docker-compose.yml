@@ -1,19 +1,6 @@
 version: "3.9"
 
 services:
-  postgres:
-    image: postgres
-    ports:
-      - "5433:5432"
-    environment:
-      POSTGRES_NAME: "postgres"
-      POSTGRES_USER: "root"
-      POSTGRES_PASSWORD: "root"
-      POSTGRES_DB: "postgres"
-  redis:
-    image: redis
-    ports:
-      - "6379:6379"
   e-commerce:
     container_name: e-commerce
     build:
@@ -23,3 +10,7 @@ services:
       - "8123:8080"
     volumes:
       - /Users/davidhorvat/GolandProjects/e-commerce:/app
+
+networks:
+  e-commerce:
+    external: true
