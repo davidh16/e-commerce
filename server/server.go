@@ -23,12 +23,17 @@ type Server struct {
 }
 
 func NewServer(s services.Service, cfg config.Config, postgres *gorm.DB, r *mux.Router) Server {
-	return Server{
+
+	server := Server{
 		config:  cfg,
 		service: s,
 		db:      postgres,
 		router:  r,
 	}
+
+	server.InitRoutes()
+
+	return server
 }
 
 func (s *Server) InitRoutes() {

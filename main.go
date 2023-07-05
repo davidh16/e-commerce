@@ -29,10 +29,7 @@ func main() {
 	r := mux.NewRouter()
 
 	// creating server and injecting service in it
-	srv := server.NewServer(svc, cfg, postgres, r)
-
-	// initializing routes
-	srv.InitRoutes()
+	server.NewServer(svc, cfg, postgres, r)
 
 	_ = fmt.Sprintf("server listening on port %s", cfg.Port)
 
