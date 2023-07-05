@@ -39,3 +39,7 @@ func checkPasswordHash(password, hash string) bool {
 	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
 	return err == nil
 }
+
+func (s Service) Test() *models.User {
+	return s.repository.Test()
+}

@@ -10,8 +10,8 @@ type Service struct {
 	repository repository.Repository
 }
 
-func NewService(redis *redis.Client, repo repository.Repository) *Service {
-	return &Service{
+func NewService(redis *redis.Client, repo repository.Repository) Service {
+	return Service{
 		redis:      redis,
 		repository: repo,
 	}

@@ -11,4 +11,4 @@ RUN go install github.com/cosmtrek/air@latest
 
 COPY . .
 
-CMD ["air"]
+CMD ["go", "run", "main.go"]

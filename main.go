@@ -2,23 +2,21 @@ package main
 
 import (
 	"e-commerce/config"
-	"e-commerce/controller"
 	"e-commerce/db"
 	"e-commerce/repository"
-	"e-commerce/routes"
+	"e-commerce/server"
 	"e-commerce/services"
 	"fmt"
-	"github.com/slayer/autorestart"
+	"github.com/gorilla/mux"
 	"net/http"
 )
 
 func main() {
-	autorestart.StartWatcher()
-
 	var cfg = config.GetConfig()
 
 	// connect to db and get the redis instance
-	redis := db.ConnectToRedis()
+	//redis := db.ConnectToRedis()
+
 	// connect to db and get the postgres instance
 	postgres := db.ConnectToDb()
 
@@ -26,15 +24,17 @@ func main() {
 	repo := repository.NewRepository(postgres)
 
 	// creating service and injecting repository in it
-	svc := services.NewService(redis, repo)
+	svc := services.NewService(nil, repo)
 
-	// creating controller and injecting service in it
-	ctrl := controller.NewController(svc, cfg)
+	r := mux.NewRouter()
+
+	// creating server and injecting service in it
+	srv := server.NewServer(svc, cfg, postgres, r)
+
+	// initializing routes
+	srv.InitRoutes()
 
 	_ = fmt.Sprintf("server listening on port %s", cfg.Port)
-
-	// creating router and injecting controller in it so all routes have access to handling functions of controller
-	r := routes.NewRouter(ctrl)
 
 	err := http.ListenAndServe(cfg.Port, r)
 	if err != nil {

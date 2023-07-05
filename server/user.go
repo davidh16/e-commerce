@@ -1,14 +1,15 @@
-package controller
+package server
 
 import (
 	"e-commerce/models"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"golang.org/x/sync/errgroup"
 	"net/http"
 )
 
-func (c Controller) Register(w http.ResponseWriter, req *http.Request) {
+func (s *Server) Register(w http.ResponseWriter, req *http.Request) {
 
 	var user models.User
 
@@ -20,9 +21,9 @@ func (c Controller) Register(w http.ResponseWriter, req *http.Request) {
 	}
 
 	// calling service to create user
-	_, err = c.service.Create(user)
-	if err != nil {
-		returnResponse(w, http.StatusBadRequest, err)
+	x := s.db.Create(&user)
+	if x.Error != nil {
+		returnResponse(w, http.StatusBadRequest, x.Error)
 		return
 	}
 
@@ -32,7 +33,7 @@ func (c Controller) Register(w http.ResponseWriter, req *http.Request) {
 	return
 }
 
-func (c Controller) Login(w http.ResponseWriter, req *http.Request) {
+func (s *Server) Login(w http.ResponseWriter, req *http.Request) {
 	var user models.User
 
 	// decoding json message to user model
@@ -43,7 +44,7 @@ func (c Controller) Login(w http.ResponseWriter, req *http.Request) {
 	}
 
 	// validating given credentials (if ok, user model is retrieved)
-	dbUser, err := c.service.ValidateCredentials(user)
+	dbUser, err := s.service.ValidateCredentials(user)
 	if err != nil {
 		if err.Error() == "record not found" {
 			returnResponse(w, http.StatusNotFound, err)
@@ -59,13 +60,13 @@ func (c Controller) Login(w http.ResponseWriter, req *http.Request) {
 	g := new(errgroup.Group)
 	g.Go(func() error {
 		// generating access token for authenticated user
-		accessToken, err = c.service.GenerateJWT(dbUser.Uuid, false)
+		accessToken, err = s.service.GenerateJWT(dbUser.Uuid, false)
 		if err != nil {
 			return err
 		}
 
 		// saving access token in memory (redis)
-		err = c.service.SaveAccessToken(dbUser.Uuid, accessToken)
+		err = s.service.SaveAccessToken(dbUser.Uuid, accessToken)
 		if err != nil {
 			return err
 		}
@@ -75,13 +76,13 @@ func (c Controller) Login(w http.ResponseWriter, req *http.Request) {
 
 	g.Go(func() error {
 		// generating refresh token for authenticated user
-		refreshToken, err = c.service.GenerateJWT(dbUser.Uuid, true)
+		refreshToken, err = s.service.GenerateJWT(dbUser.Uuid, true)
 		if err != nil {
 			return err
 		}
 
 		// saving refresh token in database
-		err = c.service.SaveRefreshToken(refreshToken)
+		err = s.service.SaveRefreshToken(refreshToken)
 		if err != nil {
 			return err
 		}
@@ -106,5 +107,16 @@ func (c Controller) Login(w http.ResponseWriter, req *http.Request) {
 
 	w.WriteHeader(http.StatusOK)
 	w.Write(response)
+	return
+}
+
+func (s *Server) Test(w http.ResponseWriter, req *http.Request) {
+	x := s.service.Test()
+	if x != nil {
+		fmt.Println(x)
+		returnResponse(w, http.StatusOK, nil)
+		return
+	}
+	returnResponse(w, http.StatusBadRequest, nil)
 	return
 }
