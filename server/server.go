@@ -32,6 +32,7 @@ func NewServer(s services.Service, cfg config.Config, postgres *gorm.DB, r *mux.
 }
 
 func (s *Server) InitRoutes() {
+	// user routes
 	s.router.HandleFunc("/register", s.Register).Methods("POST")
 	s.router.HandleFunc("/login", s.Login).Methods("POST")
 }
