@@ -43,7 +43,7 @@ func (u *User) TableName() string {
 func (u *User) BeforeCreate(tx *gorm.DB) error {
 
 	// Hash the password
-	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(u.Password), 20)
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(u.Password), 10)
 	if err != nil {
 		return err
 	}
