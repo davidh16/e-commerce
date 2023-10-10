@@ -34,13 +34,11 @@ rollback:
 	PGPASSWORD=$(DB_PASSWORD) migrate -path ./migrations -database "postgres://$(DB_USER)@$(DB_HOST):$(DB_PORT)/$(DB_NAME)?sslmode=disable" down -all
 
 up:
-	docker-compose -f docker-compose-db.yml up --build -d
-	docker-compose -f docker-compose.yml  up --build
+	docker-compose up --build -d
+	docker-compose logs -f e-commerce
 
 down:
-	docker-compose -f docker-compose-db.yml stop
-	docker-compose -f docker-compose.yml down
-	docker-compose -f docker-compose-db.yml down
+	docker-compose down
 
 stop:
 	docker stop e-commerce

@@ -9,7 +9,6 @@ require (
 	github.com/gorilla/mux v1.8.0
 	github.com/joho/godotenv v1.5.1
 	github.com/lib/pq v1.10.7
-	github.com/slayer/autorestart v0.0.0-20170706172547-5ebd91f955ae
 	github.com/tkanos/gonfig v0.0.0-20210106201359-53e13348de2f
 	golang.org/x/crypto v0.9.0
 	golang.org/x/sync v0.1.0
