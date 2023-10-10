@@ -6,13 +6,16 @@ import (
 )
 
 type Service struct {
-	redis      *redis.Client
-	repository repository.Repository
+	redis          *redis.Client
+	userRepository repository.UserRepository
 }
 
-func NewService(redis *redis.Client, repo repository.Repository) Service {
+func NewService(
+	redis *redis.Client,
+	userRepo repository.UserRepository,
+) Service {
 	return Service{
-		redis:      redis,
-		repository: repo,
+		redis:          redis,
+		userRepository: userRepo,
 	}
 }

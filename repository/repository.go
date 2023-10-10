@@ -1,31 +1,36 @@
 package repository
 
 import (
-	database "e-commerce/db"
 	"e-commerce/models"
 	"gorm.io/gorm"
 )
 
-type repository struct {
-	database.BaseInterface
+type userRepository struct {
+	db *gorm.DB
 }
 
-func NewRepository(db *gorm.DB) *repository {
-	return &repository{
-		BaseInterface: database.NewBase(db),
+func NewUserRepository(db *gorm.DB) *userRepository {
+	return &userRepository{
+		db: db,
 	}
 }
 
-type Repository interface {
-	database.BaseInterface
-	FindUserByEmailAddress(emailAddress string) (*models.User, error)
-	SaveToken(token string) error
-	Create(user models.User) (*models.User, error)
-	Test() *models.User
+func (r userRepository) Db() *gorm.DB {
+	return r.db
 }
 
-func (r repository) SaveToken(token string) error {
-	result := r.Db().Table("refresh_tokens").Create(token)
+type UserRepository interface {
+	Db() *gorm.DB
+	FindUserByEmailAddress(emailAddress string) (*models.User, error)
+	SaveToken(token string) error
+}
+
+func (r userRepository) SaveToken(token string) error {
+	table := r.Db().Table("refresh_tokens")
+
+	result := table.Create(map[string]interface{}{
+		"token": token})
+
 	if result.Error != nil {
 		return result.Error
 	}

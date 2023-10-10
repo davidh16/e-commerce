@@ -15,16 +15,16 @@ func main() {
 	var cfg = config.GetConfig()
 
 	// connect to db and get the redis instance
-	//redis := db.ConnectToRedis()
+	redis := db.ConnectToRedis()
 
 	// connect to db and get the postgres instance
 	postgres := db.ConnectToDb()
 
 	// creating repository and injecting postgres instance in it
-	repo := repository.NewRepository(postgres)
+	repo := repository.NewUserRepository(postgres)
 
 	// creating service and injecting repository in it
-	svc := services.NewService(nil, repo)
+	svc := services.NewService(redis, repo)
 
 	r := mux.NewRouter()
 

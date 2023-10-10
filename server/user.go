@@ -4,7 +4,6 @@ import (
 	"e-commerce/models"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"golang.org/x/sync/errgroup"
 	"net/http"
 )
@@ -107,16 +106,5 @@ func (s *Server) Login(w http.ResponseWriter, req *http.Request) {
 
 	w.WriteHeader(http.StatusOK)
 	w.Write(response)
-	return
-}
-
-func (s *Server) Test(w http.ResponseWriter, req *http.Request) {
-	x := s.service.Test()
-	if x != nil {
-		fmt.Println(x)
-		returnResponse(w, http.StatusOK, nil)
-		return
-	}
-	returnResponse(w, http.StatusBadRequest, nil)
 	return
 }

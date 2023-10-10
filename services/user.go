@@ -12,7 +12,7 @@ func (s Service) Create(user models.User) (*models.User, error) {
 		return nil, err
 	}
 
-	result := s.repository.Db().Create(&user)
+	result := s.userRepository.Db().Create(&user)
 	if result.Error != nil {
 		return nil, result.Error
 	}
@@ -22,7 +22,7 @@ func (s Service) Create(user models.User) (*models.User, error) {
 func (s Service) ValidateCredentials(user models.User) (*models.User, error) {
 
 	// finding the user by email
-	dbUser, err := s.repository.FindUserByEmailAddress(user.EmailAddress)
+	dbUser, err := s.userRepository.FindUserByEmailAddress(user.EmailAddress)
 	if err != nil {
 		return nil, err
 	}
@@ -38,8 +38,4 @@ func (s Service) ValidateCredentials(user models.User) (*models.User, error) {
 func checkPasswordHash(password, hash string) bool {
 	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
 	return err == nil
-}
-
-func (s Service) Test() *models.User {
-	return s.repository.Test()
 }

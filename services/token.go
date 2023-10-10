@@ -47,7 +47,7 @@ func (s Service) GenerateJWT(uuid string, refreshToken bool) (string, error) {
 }
 
 func (s Service) SaveRefreshToken(token string) error {
-	return s.repository.SaveToken(token)
+	return s.userRepository.SaveToken(token)
 }
 
 func (s Service) SaveAccessToken(userUuid string, token string) error {
