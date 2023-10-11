@@ -10,25 +10,25 @@ import (
 
 func (s *Server) Register(w http.ResponseWriter, req *http.Request) {
 
-	var user models.User
+	var user *models.User
 
 	// decoding json message to user model
 	err := json.NewDecoder(req.Body).Decode(&user)
 	if err != nil {
-		returnResponse(w, http.StatusBadRequest, err)
+		returnResponse(req.Context(), w, http.StatusBadRequest, err)
 		return
 	}
 
 	// calling service to create user
-	x := s.db.Create(&user)
-	if x.Error != nil {
-		returnResponse(w, http.StatusBadRequest, x.Error)
+	_, err = s.service.CreateUser(req.Context(), user)
+	if err != nil {
+		returnResponse(req.Context(), w, http.StatusBadRequest, err)
 		return
 	}
 
 	//TODO implement sending verification email
 
-	returnResponse(w, http.StatusCreated, nil)
+	returnResponse(req.Context(), w, http.StatusCreated, nil)
 	return
 }
 
@@ -38,7 +38,7 @@ func (s *Server) Login(w http.ResponseWriter, req *http.Request) {
 	// decoding json message to user model
 	err := json.NewDecoder(req.Body).Decode(&user)
 	if err != nil {
-		returnResponse(w, http.StatusBadRequest, err)
+		returnResponse(req.Context(), w, http.StatusBadRequest, err)
 		return
 	}
 
@@ -46,10 +46,10 @@ func (s *Server) Login(w http.ResponseWriter, req *http.Request) {
 	dbUser, err := s.service.ValidateCredentials(user)
 	if err != nil {
 		if err.Error() == "record not found" {
-			returnResponse(w, http.StatusNotFound, err)
+			returnResponse(req.Context(), w, http.StatusNotFound, err)
 			return
 		}
-		returnResponse(w, http.StatusUnauthorized, errors.New("invalid credentials"))
+		returnResponse(req.Context(), w, http.StatusUnauthorized, errors.New("invalid credentials"))
 		return
 	}
 
@@ -90,7 +90,7 @@ func (s *Server) Login(w http.ResponseWriter, req *http.Request) {
 	})
 
 	if err = g.Wait(); err != nil {
-		returnResponse(w, http.StatusInternalServerError, err)
+		returnResponse(req.Context(), w, http.StatusInternalServerError, err)
 		return
 	}
 
@@ -100,7 +100,7 @@ func (s *Server) Login(w http.ResponseWriter, req *http.Request) {
 		"refresh_token": refreshToken,
 	})
 	if err != nil {
-		returnResponse(w, http.StatusInternalServerError, err)
+		returnResponse(req.Context(), w, http.StatusInternalServerError, err)
 		return
 	}
 

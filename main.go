@@ -21,10 +21,15 @@ func main() {
 	postgres := db.ConnectToDb()
 
 	// creating repository and injecting postgres instance in it
-	repo := repository.NewUserRepository(postgres)
+	userRepo := repository.NewUserRepository(postgres)
+	categoryRepo := repository.NewCategoryRepository(postgres)
 
 	// creating service and injecting repository in it
-	svc := services.NewService(redis, repo)
+	svc := services.NewService(
+		redis,
+		userRepo,
+		categoryRepo,
+	)
 
 	r := mux.NewRouter()
 

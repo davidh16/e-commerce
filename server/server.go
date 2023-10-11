@@ -1,6 +1,7 @@
 package server
 
 import (
+	"context"
 	"e-commerce/config"
 	"e-commerce/services"
 	"github.com/gorilla/mux"
@@ -8,7 +9,15 @@ import (
 	"net/http"
 )
 
-func returnResponse(w http.ResponseWriter, status int, err error) {
+func returnResponse(ctx context.Context, w http.ResponseWriter, status int, err error) {
+	tx := ctx.Value("tx")
+
+	if status != 200 {
+		tx.(*gorm.DB).Rollback()
+	} else {
+		tx.(*gorm.DB).Commit()
+	}
+
 	w.WriteHeader(status)
 	if err != nil {
 		w.Write([]byte(err.Error()))
@@ -18,7 +27,6 @@ func returnResponse(w http.ResponseWriter, status int, err error) {
 type Server struct {
 	config  config.Config
 	service services.Service
-	db      *gorm.DB
 	router  *mux.Router
 }
 
@@ -27,13 +35,18 @@ func NewServer(s services.Service, cfg config.Config, postgres *gorm.DB, r *mux.
 	server := Server{
 		config:  cfg,
 		service: s,
-		db:      postgres,
 		router:  r,
 	}
 
 	server.InitRoutes()
 
 	return server
+}
+
+type Response struct {
+	Status  int
+	Message string
+	Error   string
 }
 
 func (s *Server) InitRoutes() {
