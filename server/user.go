@@ -15,20 +15,20 @@ func (s *Server) Register(w http.ResponseWriter, req *http.Request) {
 	// decoding json message to user model
 	err := json.NewDecoder(req.Body).Decode(&user)
 	if err != nil {
-		returnResponse(req.Context(), w, http.StatusBadRequest, err)
+		returnResponse(w, http.StatusBadRequest, err, nil)
 		return
 	}
 
 	// calling service to create user
-	_, err = s.service.CreateUser(req.Context(), user)
+	_, err = s.service.CreateUser(user)
 	if err != nil {
-		returnResponse(req.Context(), w, http.StatusBadRequest, err)
+		returnResponse(w, http.StatusBadRequest, err, nil)
 		return
 	}
 
 	//TODO implement sending verification email
 
-	returnResponse(req.Context(), w, http.StatusCreated, nil)
+	returnResponse(w, http.StatusCreated, nil, nil)
 	return
 }
 
@@ -38,7 +38,7 @@ func (s *Server) Login(w http.ResponseWriter, req *http.Request) {
 	// decoding json message to user model
 	err := json.NewDecoder(req.Body).Decode(&user)
 	if err != nil {
-		returnResponse(req.Context(), w, http.StatusBadRequest, err)
+		returnResponse(w, http.StatusBadRequest, err, nil)
 		return
 	}
 
@@ -46,10 +46,10 @@ func (s *Server) Login(w http.ResponseWriter, req *http.Request) {
 	dbUser, err := s.service.ValidateCredentials(user)
 	if err != nil {
 		if err.Error() == "record not found" {
-			returnResponse(req.Context(), w, http.StatusNotFound, err)
+			returnResponse(w, http.StatusNotFound, err, nil)
 			return
 		}
-		returnResponse(req.Context(), w, http.StatusUnauthorized, errors.New("invalid credentials"))
+		returnResponse(w, http.StatusUnauthorized, errors.New("invalid credentials"), nil)
 		return
 	}
 
@@ -90,7 +90,7 @@ func (s *Server) Login(w http.ResponseWriter, req *http.Request) {
 	})
 
 	if err = g.Wait(); err != nil {
-		returnResponse(req.Context(), w, http.StatusInternalServerError, err)
+		returnResponse(w, http.StatusInternalServerError, err, nil)
 		return
 	}
 
@@ -100,7 +100,7 @@ func (s *Server) Login(w http.ResponseWriter, req *http.Request) {
 		"refresh_token": refreshToken,
 	})
 	if err != nil {
-		returnResponse(req.Context(), w, http.StatusInternalServerError, err)
+		returnResponse(w, http.StatusInternalServerError, err, nil)
 		return
 	}
 

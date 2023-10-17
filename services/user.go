@@ -1,25 +1,27 @@
 package services
 
 import (
-	"context"
 	"e-commerce/models"
 	"errors"
 	"golang.org/x/crypto/bcrypt"
 )
 
-func (s Service) CreateUser(ctx context.Context, user *models.User) (*models.User, error) {
+func (s Service) CreateUser(user *models.User) (*models.User, error) {
 	err := user.Validate()
 	if err != nil {
 		return nil, err
 	}
 
 	tx := s.userRepository.Db().Begin()
-	context.WithValue(ctx, "tx", tx)
 
-	result := s.userRepository.Db().Create(&user)
+	result := tx.Create(&user)
 	if result.Error != nil {
+		tx.Rollback()
 		return nil, result.Error
 	}
+
+	tx.Commit()
+
 	return user, nil
 }
 

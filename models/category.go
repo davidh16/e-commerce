@@ -6,23 +6,30 @@ import (
 )
 
 type Category struct {
-	Uuid      string    `json:"uuid"`
-	CreatedAt time.Time `json:"created_at"`
+	Uuid      string    `json:"uuid" gorm:"unique;type:uuid; column:uuid;default:uuid_generate_v4()"`
 	Title     string    `json:"title"`
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
 }
 
-func (u *Category) TableName() string {
+func (c *Category) Merge(x *Category) *Category {
+	c.Title = x.Title
+	c.UpdatedAt = time.Now()
+	return c
+}
+
+func (c *Category) TableName() string {
 	return "categories"
 }
 
 var categoryValidationRules = map[string]string{
-	"Tittle": "required",
+	"Title": "required",
 }
 
-func (u *Category) Validate() error {
+func (c *Category) Validate() error {
 	v := validator.New()
 	v.RegisterStructValidationMapRules(categoryValidationRules, Category{})
-	err := v.Struct(u)
+	err := v.Struct(c)
 	if err != nil {
 		return err
 	}

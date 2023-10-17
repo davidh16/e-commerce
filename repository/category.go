@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"e-commerce/models"
 	"gorm.io/gorm"
 )
 
@@ -20,4 +21,14 @@ func (r categoryRepository) Db() *gorm.DB {
 
 type CategoryRepository interface {
 	Db() *gorm.DB
+	FindCategoryByUuid(uuid string) (*models.Category, error)
+}
+
+func (r categoryRepository) FindCategoryByUuid(uuid string) (*models.Category, error) {
+	var category models.Category
+	result := r.Db().First(&category).Where("uuid=?", uuid)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return &category, nil
 }
