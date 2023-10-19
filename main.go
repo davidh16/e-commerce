@@ -23,6 +23,7 @@ func main() {
 	// creating repository and injecting postgres instance in it
 	userRepo := repository.NewUserRepository(postgres)
 	categoryRepo := repository.NewCategoryRepository(postgres)
+	subcategoryRepo := repository.NewSubcategoryRepository(postgres)
 	productRepo := repository.NewProductRepository(postgres)
 
 	// creating service and injecting repository in it
@@ -30,6 +31,7 @@ func main() {
 		redis,
 		userRepo,
 		categoryRepo,
+		subcategoryRepo,
 		productRepo,
 	)
 

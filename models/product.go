@@ -6,17 +6,20 @@ import (
 )
 
 type Product struct {
-	Uuid        string    `json:"uuid" gorm:"unique;type:uuid; column:uuid;default:uuid_generate_v4()"`
-	Name        string    `json:"name"`
-	Description string    `json:"description"`
-	Price       float64   `json:"price"`
-	ImageURL    string    `json:"image_url"`
-	Color       string    `json:"color"`
-	Code        string    `json:"code"`
-	SubCategory string    `json:"sub_category"`
-	Category    string    `json:"category"`
-	CreatedAt   time.Time `json:"created_at"`
-	UpdatedAt   time.Time `json:"updated_at"`
+	Uuid            string      `json:"uuid" gorm:"unique;type:uuid; column:uuid;default:uuid_generate_v4()"`
+	Name            string      `json:"name"`
+	Brand           string      `json:"brand"`
+	Description     string      `json:"description"`
+	Price           float32     `json:"price"`
+	ImageURL        string      `json:"image_url"`
+	Color           string      `json:"color"`
+	Code            string      `json:"code"`
+	SubcategoryUuid string      `json:"subcategory_uuid"`
+	Subcategory     Subcategory `json:"-" gorm:"foreignKey:SubcategoryUuid;references:Uuid"`
+	CategoryUuid    string      `json:"category_uuid"`
+	Category        Category    `json:"-" gorm:"foreignKey:CategoryUuid;references:Uuid"`
+	CreatedAt       time.Time   `json:"created_at"`
+	UpdatedAt       time.Time   `json:"updated_at"`
 }
 
 func (p *Product) Merge(x *Product) *Product {
@@ -55,8 +58,8 @@ var productValidationRules = map[string]string{
 	"ImageURL":    "required",
 	"Color":       "required",
 	"Code":        "required",
-	"SubCategory": "required",
-	"Category":    "required",
+	"Subcategory": "required,uuid,nefield=Category",
+	"Category":    "required,uuid,nefield=Subcategory",
 }
 
 func (p *Product) Validate() error {

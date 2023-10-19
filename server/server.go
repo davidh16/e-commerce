@@ -55,6 +55,13 @@ func (s *Server) InitRoutes() {
 	s.router.HandleFunc("/category", s.GetCategory).Methods("GET")
 	s.router.HandleFunc("/category/list", s.ListCategories).Methods("GET")
 
+	// subcategory routes
+	s.router.HandleFunc("/subcategory", s.CreateSubcategory).Methods("POST")
+	s.router.HandleFunc("/subcategory/update", s.UpdateSubcategory).Methods("POST")
+	s.router.HandleFunc("/subcategory/delete", s.DeleteSubcategory).Methods("POST")
+	s.router.HandleFunc("/subcategory", s.GetSubcategory).Methods("GET")
+	s.router.HandleFunc("/subcategory/list", s.ListSubategories).Methods("GET")
+
 	// product routes
 	s.router.HandleFunc("/product", s.CreateProduct).Methods("POST")
 	s.router.HandleFunc("/product/update", s.UpdateProduct).Methods("POST")
