@@ -30,19 +30,11 @@ func (s *Server) UploadMedia(w http.ResponseWriter, req *http.Request) {
 		Path:     path,
 	}
 
-	tx, err := s.service.CreateMedia(media)
+	_, err = s.service.CreateAndUploadMedia(media, file)
 	if err != nil {
 		returnResponse(w, http.StatusBadRequest, err, nil)
 	}
 
-	_, err = s.service.UploadMediaToBucket(context.Background(), file, path)
-	if err != nil {
-		tx.Rollback()
-		returnResponse(w, http.StatusBadRequest, err, nil)
-		return
-	}
-
-	tx.Commit()
 	returnResponse(w, http.StatusOK, nil, nil)
 	return
 }

@@ -1,11 +1,12 @@
 package services
 
 import (
+	"context"
 	"e-commerce/models"
-	"gorm.io/gorm"
+	"mime/multipart"
 )
 
-func (s Service) CreateMedia(media *models.Media) (*gorm.DB, error) {
+func (s Service) CreateAndUploadMedia(media *models.Media, file multipart.File) (*models.Media, error) {
 	tx := s.mediaRepository.Db().Begin()
 	result := tx.Create(media)
 	if result.Error != nil {
@@ -13,7 +14,14 @@ func (s Service) CreateMedia(media *models.Media) (*gorm.DB, error) {
 		return nil, result.Error
 	}
 
-	return tx, nil
+	_, err := s.UploadMediaToBucket(context.Background(), file, media.Path)
+	if err != nil {
+		tx.Rollback()
+		return nil, err
+	}
+	tx.Commit()
+
+	return media, nil
 }
 
 func (s Service) FindMediaByUuid(uuid string) (*models.Media, error) {
