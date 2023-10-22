@@ -11,7 +11,7 @@ type Product struct {
 	Brand           string      `json:"brand"`
 	Description     string      `json:"description"`
 	Price           float32     `json:"price"`
-	ImageURL        string      `json:"image_url"`
+	MediaUuid       string      `json:"media_uuid"`
 	Color           string      `json:"color"`
 	Code            string      `json:"code"`
 	SubcategoryUuid string      `json:"subcategory_uuid"`
@@ -33,8 +33,8 @@ func (p *Product) Merge(x *Product) *Product {
 	if x.Price != 0 {
 		p.Price = x.Price
 	}
-	if x.ImageURL != "" {
-		p.ImageURL = x.ImageURL
+	if x.MediaUuid != "" {
+		p.MediaUuid = x.MediaUuid
 	}
 	if x.Color != "" {
 		p.Color = x.Color
@@ -55,7 +55,7 @@ var productValidationRules = map[string]string{
 	"Name":        "required",
 	"Description": "required",
 	"Price":       "required",
-	"ImageURL":    "required",
+	"MediaUuid":   "required",
 	"Color":       "required",
 	"Code":        "required",
 	"Subcategory": "required,uuid,nefield=Category",

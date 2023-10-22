@@ -94,6 +94,11 @@ func (s *Server) Login(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	http.SetCookie(w, &http.Cookie{
+		Name:  "loggedin",
+		Value: accessToken,
+	})
+
 	// creating  json response
 	response, err := json.Marshal(map[string]string{
 		"access_token":  accessToken,
@@ -104,7 +109,6 @@ func (s *Server) Login(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	w.WriteHeader(http.StatusOK)
-	w.Write(response)
+	returnResponse(w, http.StatusOK, err, response)
 	return
 }

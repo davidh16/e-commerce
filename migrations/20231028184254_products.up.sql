@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS products (
     brand varchar,
     description text,
     price float,
-    image_url varchar,
+    media_uuid uuid REFERENCES media(uuid),
     color varchar,
     code varchar,
     subcategory_uuid uuid REFERENCES subcategories(uuid),
