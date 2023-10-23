@@ -3,10 +3,13 @@ package services
 import "e-commerce/models"
 
 func (s Service) CreatePaymentInfo(paymentInfo *models.PaymentInfo) (*models.PaymentInfo, error) {
-	result := s.paymentInfoRepository.Db().Create(paymentInfo)
+	tx := s.paymentInfoRepository.Db().Begin()
+	result := tx.Create(paymentInfo)
 	if result.Error != nil {
+		tx.Rollback()
 		return nil, result.Error
 	}
+	tx.Commit()
 	return paymentInfo, nil
 }
 

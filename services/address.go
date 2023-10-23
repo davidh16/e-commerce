@@ -3,10 +3,13 @@ package services
 import "e-commerce/models"
 
 func (s Service) CreateAddress(address *models.Address) (*models.Address, error) {
-	result := s.addressRepository.Db().Create(address)
+	tx := s.addressRepository.Db().Begin()
+	result := tx.Create(address)
 	if result.Error != nil {
+		tx.Rollback()
 		return nil, result.Error
 	}
+	tx.Commit()
 	return address, nil
 }
 
