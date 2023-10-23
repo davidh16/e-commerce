@@ -9,7 +9,7 @@ import (
 	"strings"
 )
 
-func (s *Server) UploadMedia(w http.ResponseWriter, req *http.Request) {
+func (s *Server) CreateAndUploadMedia(w http.ResponseWriter, req *http.Request) {
 
 	if req.FormValue("category_uuid") == "" || req.FormValue("subcategory_uuid") == "" || req.FormValue("product_uuid") == "" {
 		returnResponse(w, http.StatusBadRequest, errors.New("missing data"), nil)
@@ -42,6 +42,12 @@ func (s *Server) UploadMedia(w http.ResponseWriter, req *http.Request) {
 func (s *Server) DownloadMedia(w http.ResponseWriter, req *http.Request) {
 	var request struct {
 		MediaUuid string `json:"media_uuid" validate:"required"`
+	}
+
+	err := json.NewDecoder(req.Body).Decode(&request)
+	if err != nil {
+		returnResponse(w, http.StatusBadRequest, err, nil)
+		return
 	}
 
 	media, err := s.service.FindMediaByUuid(request.MediaUuid)

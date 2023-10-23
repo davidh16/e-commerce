@@ -26,7 +26,7 @@ type CategoryRepository interface {
 
 func (r categoryRepository) FindCategoryByUuid(uuid string) (*models.Category, error) {
 	var category models.Category
-	result := r.Db().First(&category).Where("uuid=?", uuid)
+	result := r.Db().Where("uuid=?", uuid).First(&category)
 	if result.Error != nil {
 		return nil, result.Error
 	}

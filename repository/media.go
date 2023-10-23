@@ -26,7 +26,7 @@ type MediaRepository interface {
 
 func (r mediaRepository) FindMediaByUuid(uuid string) (*models.Media, error) {
 	var media models.Media
-	result := r.Db().First(&media).Where("uuid=?", uuid)
+	result := r.Db().Where("uuid=?", uuid).First(&media)
 	if result.Error != nil {
 		return nil, result.Error
 	}

@@ -26,7 +26,7 @@ type ProductRepository interface {
 
 func (r productRepository) FindProductByUuid(uuid string) (*models.Product, error) {
 	var product models.Product
-	result := r.Db().First(&product).Where("uuid=?", uuid)
+	result := r.Db().Where("uuid=?", uuid).First(&product)
 	if result.Error != nil {
 		return nil, result.Error
 	}

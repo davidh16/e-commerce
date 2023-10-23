@@ -26,6 +26,8 @@ func main() {
 	subcategoryRepo := repository.NewSubcategoryRepository(postgres)
 	productRepo := repository.NewProductRepository(postgres)
 	mediaRepo := repository.NewMediaRepository(postgres)
+	addressRepo := repository.NewAddressRepository(postgres)
+	paymentInfoRepo := repository.NewPaymentInfoRepository(postgres)
 
 	// creating service and injecting repository in it
 	svc := services.NewService(
@@ -35,6 +37,8 @@ func main() {
 		subcategoryRepo,
 		productRepo,
 		mediaRepo,
+		addressRepo,
+		paymentInfoRepo,
 	)
 
 	r := mux.NewRouter()

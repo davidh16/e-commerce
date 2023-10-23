@@ -63,7 +63,7 @@ func (s *Server) InitRoutes() {
 	s.router.HandleFunc("/subcategory/list", s.ListSubategories).Methods("GET")
 
 	// media routes
-	s.router.HandleFunc("/media/upload", s.UploadMedia).Methods("POST")
+	s.router.HandleFunc("/media/upload", s.CreateAndUploadMedia).Methods("POST")
 	s.router.HandleFunc("/media/download", s.DownloadMedia).Methods("POST")
 
 	// product routes
@@ -72,4 +72,9 @@ func (s *Server) InitRoutes() {
 	s.router.HandleFunc("/product/delete", s.DeleteProduct).Methods("POST")
 	s.router.HandleFunc("/product", s.GetProduct).Methods("GET")
 	s.router.HandleFunc("/product/list", s.ListProducts).Methods("GET")
+
+	// address routes
+	s.router.HandleFunc("/address", s.SaveAddress).Methods("POST")
+	s.router.HandleFunc("/address", s.GetAddress).Methods("Get")
+	s.router.HandleFunc("/address/list", s.ListUsersAddresses).Methods("GET")
 }

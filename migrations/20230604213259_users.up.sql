@@ -6,9 +6,7 @@ CREATE TABLE IF NOT EXISTS users (
     -- extras
      email_address varchar unique,
      password varchar,
-     account_status int not null ,
-     shipping_address uuid,
-     payment_info uuid
+     account_status int not null
 );
 
 CREATE UNIQUE INDEX unique_uuid on users(uuid);

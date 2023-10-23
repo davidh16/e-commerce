@@ -39,19 +39,9 @@ func (r userRepository) SaveToken(token string) error {
 
 func (r userRepository) FindUserByEmailAddress(emailAddress string) (*models.User, error) {
 	var user models.User
-	result := r.Db().First(&user).Where("email_address=?", emailAddress)
+	result := r.Db().Where("email_address=?", emailAddress).First(&user)
 	if result.Error != nil {
 		return nil, result.Error
 	}
 	return &user, nil
-}
-
-func (r userRepository) Test() *models.User {
-	var user models.User
-
-	result := r.Db().First(&user).Where("email_address=?", "david@david.hr")
-	if result.Error != nil {
-		return nil
-	}
-	return &user
 }

@@ -12,6 +12,8 @@ type Service struct {
 	subcategoryRepository repository.SubcategoryRepository
 	productRepository     repository.ProductRepository
 	mediaRepository       repository.MediaRepository
+	addressRepository     repository.AddressRepository
+	paymentInfoRepository repository.PaymentInfoRepository
 }
 
 func NewService(
@@ -21,6 +23,8 @@ func NewService(
 	subcategoryRepo repository.SubcategoryRepository,
 	productRepo repository.ProductRepository,
 	mediaRepo repository.MediaRepository,
+	addressRepo repository.AddressRepository,
+	paymentInfoRepo repository.PaymentInfoRepository,
 ) Service {
 	return Service{
 		redis:                 redis,
@@ -29,5 +33,7 @@ func NewService(
 		subcategoryRepository: subcategoryRepo,
 		productRepository:     productRepo,
 		mediaRepository:       mediaRepo,
+		addressRepository:     addressRepo,
+		paymentInfoRepository: paymentInfoRepo,
 	}
 }

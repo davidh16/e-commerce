@@ -8,14 +8,12 @@ import (
 )
 
 type User struct {
-	Uuid            string    `json:"uuid" gorm:"unique;type:uuid; column:uuid;default:uuid_generate_v4()"`
-	EmailAddress    string    `json:"email_address"`
-	Password        string    `json:"password"`
-	ShippingAddress *string   `json:"shipping_address"`
-	PaymentInfo     *string   `json:"payment_info" gorm:"embedded"`
-	AccountStatus   int       `json:"account_status"`
-	CreatedAt       time.Time `json:"created_at"`
-	UpdatedAt       time.Time `json:"updated_at"`
+	Uuid          string    `json:"uuid" gorm:"unique;type:uuid; column:uuid;default:uuid_generate_v4()"`
+	EmailAddress  string    `json:"email_address"`
+	Password      string    `json:"password"`
+	AccountStatus int       `json:"account_status"`
+	CreatedAt     time.Time `json:"created_at"`
+	UpdatedAt     time.Time `json:"updated_at"`
 	//OrderHistory      []string      `json:"order_history"`
 	//Wishlist          []string      `json:"wishlist"`
 	//ShoppingCart      []string      `json:"shopping_cart"`

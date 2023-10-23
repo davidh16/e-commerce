@@ -26,7 +26,7 @@ type SubcategoryRepository interface {
 
 func (r subcategoryRepository) FindSubcategoryByUuid(uuid string) (*models.Subcategory, error) {
 	var subcategory models.Subcategory
-	result := r.Db().First(&subcategory).Where("uuid=?", uuid)
+	result := r.Db().Where("uuid=?", uuid).First(&subcategory)
 	if result.Error != nil {
 		return nil, result.Error
 	}
