@@ -47,6 +47,7 @@ func (s *Server) InitRoutes() {
 	// user routes
 	s.router.HandleFunc("/register", s.Register).Methods("POST")
 	s.router.HandleFunc("/login", s.Login).Methods("POST")
+	s.router.HandleFunc("/me", s.Me).Methods("GET")
 
 	// category routes
 	s.router.HandleFunc("/category", s.CreateCategory).Methods("POST")

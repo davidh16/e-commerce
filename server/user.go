@@ -94,21 +94,25 @@ func (s *Server) Login(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	http.SetCookie(w, &http.Cookie{
-		Name:  "loggedin",
-		Value: accessToken,
-	})
-
 	// creating  json response
-	response, err := json.Marshal(map[string]string{
-		"access_token":  accessToken,
-		"refresh_token": refreshToken,
-	})
+	var response struct {
+		AccessToken  string
+		RefreshToken string
+	}
+	response.AccessToken = accessToken
+	response.RefreshToken = refreshToken
+
+	returnResponse(w, http.StatusOK, err, response)
+	return
+}
+
+func (s *Server) Me(w http.ResponseWriter, req *http.Request) {
+	reqToken := req.Header.Get("Authorization")
+	me, err := s.service.Me(reqToken)
 	if err != nil {
 		returnResponse(w, http.StatusInternalServerError, err, nil)
 		return
 	}
-
-	returnResponse(w, http.StatusOK, err, response)
+	returnResponse(w, http.StatusOK, nil, me)
 	return
 }

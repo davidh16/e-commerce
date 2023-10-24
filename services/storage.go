@@ -16,7 +16,7 @@ func (s Service) UploadMediaToBucket(ctx context.Context, file multipart.File, p
 
 	cfg := config.GetConfig()
 
-	opt := option.WithCredentialsFile("password-lock-486ee-firebase-adminsdk-xtd5c-cc43257771.json")
+	opt := option.WithCredentials(cfg.StorageCredentials)
 	app, err := firebase.NewApp(ctx, nil, opt)
 	if err != nil {
 		return "", err
@@ -57,7 +57,7 @@ func (s Service) DownloadMedia(ctx context.Context, path string) ([]byte, error)
 
 	cfg := config.GetConfig()
 
-	opt := option.WithCredentialsFile("password-lock-486ee-firebase-adminsdk-xtd5c-cc43257771.json")
+	opt := option.WithCredentials(cfg.StorageCredentials)
 	app, err := firebase.NewApp(ctx, nil, opt)
 	if err != nil {
 		return nil, err
