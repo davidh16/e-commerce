@@ -78,4 +78,9 @@ func (s *Server) InitRoutes() {
 	s.router.HandleFunc("/address", s.SaveAddress).Methods("POST")
 	s.router.HandleFunc("/address", s.GetAddress).Methods("Get")
 	s.router.HandleFunc("/address/list", s.ListUsersAddresses).Methods("GET")
+
+	// cart routes
+	s.router.HandleFunc("/cart/add", s.AddItemToTheCart).Methods("POST")
+	s.router.HandleFunc("/cart", s.GetCart).Methods("Get")
+	s.router.HandleFunc("/cart/remove", s.RemoveItemFromTheCart).Methods("POST")
 }

@@ -4,7 +4,6 @@ import (
 	"e-commerce/models"
 	"encoding/json"
 	"errors"
-	"github.com/google/uuid"
 	"github.com/samber/lo"
 	"net/http"
 )
@@ -30,7 +29,7 @@ func (s *Server) AddItemToTheCart(w http.ResponseWriter, req *http.Request) {
 	}
 
 	if cart == nil {
-		cart.Uuid = uuid.New().String()
+		cart.Uuid = "uuid.New().String()"
 		cart.UserUuid = me
 		cart.Items = append(cart.Items, cartItem)
 
@@ -44,7 +43,6 @@ func (s *Server) AddItemToTheCart(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	//todo provjeriti postoji li taj product u cartu te ako postoji nadodati quantity
 	updatedCart := lo.FilterMap(cart.Items, func(item models.CartItem, index int) (*models.Cart, bool) {
 		if item.ProductUuid == cartItem.ProductUuid {
 			cart.Items[index].Quantity += cartItem.Quantity
@@ -126,6 +124,16 @@ func (s *Server) RemoveItemFromTheCart(w http.ResponseWriter, req *http.Request)
 		return
 	}
 
+	returnResponse(w, http.StatusOK, nil, cart)
+	return
+}
+
+func (s *Server) GetCart(w http.ResponseWriter, req *http.Request) {
+	cart, err := s.service.GetCart(req.FormValue("user_uuid"))
+	if err != nil {
+		returnResponse(w, http.StatusInternalServerError, err, nil)
+		return
+	}
 	returnResponse(w, http.StatusOK, nil, cart)
 	return
 }

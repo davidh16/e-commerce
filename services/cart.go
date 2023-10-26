@@ -26,7 +26,7 @@ func (s Service) GetCart(userUuid string) (*models.Cart, error) {
 	var cart models.Cart
 	cartRedis, err := s.redis.Get(context.Background(), strings.Join([]string{"cart", userUuid}, "-")).Result()
 	if err != nil {
-		return nil, errors.New("Failed to retreive cart from Redis")
+		return nil, nil
 	}
 	err = mapstructure.Decode(cartRedis, &cart) // You can use a library like "mapstructure" for this
 	if err != nil {
