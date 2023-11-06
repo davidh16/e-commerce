@@ -3,13 +3,14 @@ package services
 import (
 	"context"
 	"e-commerce/config"
+	"e-commerce/models"
 	"errors"
 	"github.com/golang-jwt/jwt"
 	"strings"
 	"time"
 )
 
-func (s Service) GenerateJWT(uuid string, refreshToken bool) (string, error) {
+func (s Service) GenerateJWT(user *models.User, refreshToken bool) (string, error) {
 	cfg := config.GetConfig()
 
 	/*
@@ -35,7 +36,8 @@ func (s Service) GenerateJWT(uuid string, refreshToken bool) (string, error) {
 	token.Claims = jwt.MapClaims{
 		"exp":        exp,
 		"authorized": true,
-		"sub":        uuid,
+		"sub":        user.Uuid,
+		"role":       user.Role.Name,
 	}
 
 	// converting token into string
@@ -53,6 +55,14 @@ func (s Service) SaveRefreshToken(token string) error {
 
 func (s Service) SaveAccessToken(userUuid string, token string) error {
 	err := s.redis.Set(context.Background(), strings.Join([]string{"user", userUuid}, "-"), token, 1*time.Hour).Err()
+	if err != nil {
+		return errors.New("Failed to store token in Redis")
+	}
+	return nil
+}
+
+func (s Service) BlackListToken(token string) error {
+	err := s.redis.Set(context.Background(), strings.Join([]string{"blacklist", token}, "-"), "1", 1*time.Hour).Err()
 	if err != nil {
 		return errors.New("Failed to store token in Redis")
 	}

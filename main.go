@@ -28,6 +28,7 @@ func main() {
 	mediaRepo := repository.NewMediaRepository(postgres)
 	addressRepo := repository.NewAddressRepository(postgres)
 	paymentInfoRepo := repository.NewPaymentInfoRepository(postgres)
+	roleRepo := repository.NewRoleRepository(postgres)
 
 	// creating service and injecting repository in it
 	svc := services.NewService(
@@ -39,12 +40,13 @@ func main() {
 		mediaRepo,
 		addressRepo,
 		paymentInfoRepo,
+		roleRepo,
 	)
 
 	r := mux.NewRouter()
 
 	// creating server and injecting service in it
-	server.NewServer(svc, cfg, postgres, r)
+	server.NewServer(svc, cfg, redis, r)
 
 	_ = fmt.Sprintf("server listening on port %s", cfg.Port)
 

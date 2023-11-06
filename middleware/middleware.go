@@ -1,21 +1,80 @@
 package middleware
 
-import "net/http"
+import (
+	"fmt"
+	"github.com/go-redis/redis/v8"
+	"github.com/golang-jwt/jwt"
+	"net/http"
+	"strings"
+)
 
-// a place to declare all middleware functions
-// every middleware function accepts http.HandlerFunc as an input and returns the same by calling passed function with ServeHTTP method
+type Middleware struct {
+	redis *redis.Client
+}
 
-// example :
+func InitializeMiddleware(redis *redis.Client) *Middleware {
+	return &Middleware{
+		redis: redis,
+	}
+}
 
-// func LoggingMiddleware(next http.HandlerFunc) http.HandlerFunc {
-//	 return func(w http.ResponseWriter, r *http.Request) {
-//		 log.Printf("[%s] %s\n", r.Method, r.URL.Path)
-//		 next.ServeHTTP(w, r)
-//	 }
-// }
+func (m *Middleware) AdminAuthMiddleware(next http.HandlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
 
-func AuthentificationMiddleware(next http.HandlerFunc) http.HandlerFunc {
-	return func(w http.ResponseWriter, req *http.Request) {
+		authHeader := r.Header.Get("Authorization")
+		token := strings.Split(authHeader, "Bearer ")[1]
 
+		tkn, err := jwt.Parse(token, func(token *jwt.Token) (any, error) {
+			return nil, nil
+		})
+		if err != nil {
+			if err == jwt.ErrSignatureInvalid {
+				w.WriteHeader(http.StatusUnauthorized)
+				return
+			}
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
+		if !tkn.Valid {
+			w.WriteHeader(http.StatusUnauthorized)
+			return
+		}
+
+		var role string
+		if claims, ok := tkn.Claims.(jwt.MapClaims); ok {
+			role = fmt.Sprint(claims["role"])
+		}
+
+		if role != "admin" {
+			w.WriteHeader(http.StatusUnauthorized)
+			return
+		}
+		next.ServeHTTP(w, r)
+	}
+}
+
+func (m *Middleware) AuthMiddleware(next http.HandlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+
+		authHeader := r.Header.Get("Authorization")
+		token := strings.Split(authHeader, "Bearer ")[1]
+
+		tkn, err := jwt.Parse(token, func(token *jwt.Token) (any, error) {
+			return nil, nil
+		})
+		if err != nil {
+			if err == jwt.ErrSignatureInvalid {
+				w.WriteHeader(http.StatusUnauthorized)
+				return
+			}
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
+		if !tkn.Valid {
+			w.WriteHeader(http.StatusUnauthorized)
+			return
+		}
+
+		next.ServeHTTP(w, r)
 	}
 }

@@ -4,6 +4,7 @@ import (
 	"e-commerce/models"
 	"encoding/json"
 	"errors"
+	"github.com/google/uuid"
 	"github.com/samber/lo"
 	"net/http"
 )
@@ -29,7 +30,7 @@ func (s *Server) AddItemToTheCart(w http.ResponseWriter, req *http.Request) {
 	}
 
 	if cart == nil {
-		cart.Uuid = "uuid.New().String()"
+		cart.Uuid = uuid.New().String()
 		cart.UserUuid = me
 		cart.Items = append(cart.Items, cartItem)
 

@@ -6,6 +6,7 @@ import (
 	"errors"
 	"golang.org/x/sync/errgroup"
 	"net/http"
+	"strings"
 )
 
 func (s *Server) Register(w http.ResponseWriter, req *http.Request) {
@@ -59,7 +60,7 @@ func (s *Server) Login(w http.ResponseWriter, req *http.Request) {
 	g := new(errgroup.Group)
 	g.Go(func() error {
 		// generating access token for authenticated user
-		accessToken, err = s.service.GenerateJWT(dbUser.Uuid, false)
+		accessToken, err = s.service.GenerateJWT(dbUser, false)
 		if err != nil {
 			return err
 		}
@@ -75,7 +76,7 @@ func (s *Server) Login(w http.ResponseWriter, req *http.Request) {
 
 	g.Go(func() error {
 		// generating refresh token for authenticated user
-		refreshToken, err = s.service.GenerateJWT(dbUser.Uuid, true)
+		refreshToken, err = s.service.GenerateJWT(dbUser, true)
 		if err != nil {
 			return err
 		}
@@ -114,5 +115,19 @@ func (s *Server) Me(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 	returnResponse(w, http.StatusOK, nil, me)
+	return
+}
+
+func (s *Server) Logout(w http.ResponseWriter, req *http.Request) {
+	reqToken := req.Header.Get("Authorization")
+	reqToken = strings.Split(reqToken, "Bearer ")[1]
+
+	err := s.service.BlackListToken(reqToken)
+	if err != nil {
+		returnResponse(w, http.StatusInternalServerError, err, nil)
+		return
+	}
+
+	returnResponse(w, http.StatusOK, nil, nil)
 	return
 }

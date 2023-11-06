@@ -6,7 +6,8 @@ CREATE TABLE IF NOT EXISTS users (
     -- extras
      email_address varchar unique,
      password varchar,
-     account_status int not null
+     account_status int not null,
+     role_uuid uuid REFERENCES roles(uuid)
 );
 
 CREATE UNIQUE INDEX unique_uuid on users(uuid);

@@ -14,9 +14,8 @@ type User struct {
 	AccountStatus int       `json:"account_status"`
 	CreatedAt     time.Time `json:"created_at"`
 	UpdatedAt     time.Time `json:"updated_at"`
-	//OrderHistory      []string      `json:"order_history"`
-	//Wishlist          []string      `json:"wishlist"`
-	//ShoppingCart      []string      `json:"shopping_cart"`
+	RoleUuid      string    `json:"role_uuid"`
+	Role          Role      `json:"-" gorm:"foreignKey:RoleUuid;references:Uuid"`
 }
 
 func (u *User) Validate() error {
