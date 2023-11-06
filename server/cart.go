@@ -96,7 +96,6 @@ func (s *Server) RemoveItemFromTheCart(w http.ResponseWriter, req *http.Request)
 		return
 	}
 
-	//TODO ZAVRSITI
 	updatedCart := lo.FilterMap(cart.Items, func(item models.CartItem, index int) (*models.Cart, bool) {
 		if item.ProductUuid == cartItem.ProductUuid {
 			if item.Quantity > 1 {
@@ -114,7 +113,7 @@ func (s *Server) RemoveItemFromTheCart(w http.ResponseWriter, req *http.Request)
 			returnResponse(w, http.StatusInternalServerError, err, nil)
 			return
 		}
-		returnResponse(w, http.StatusOK, nil, updatedCart)
+		returnResponse(w, http.StatusCreated, nil, updatedCart)
 		return
 	}
 
@@ -125,7 +124,7 @@ func (s *Server) RemoveItemFromTheCart(w http.ResponseWriter, req *http.Request)
 		return
 	}
 
-	returnResponse(w, http.StatusOK, nil, cart)
+	returnResponse(w, http.StatusCreated, nil, cart)
 	return
 }
 

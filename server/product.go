@@ -22,7 +22,7 @@ func (s *Server) CreateProduct(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	returnResponse(w, http.StatusOK, err, nil)
+	returnResponse(w, http.StatusCreated, err, nil)
 	return
 
 }

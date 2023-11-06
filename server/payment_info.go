@@ -21,7 +21,7 @@ func (s *Server) SavePaymentInfo(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	returnResponse(w, http.StatusOK, nil, nil)
+	returnResponse(w, http.StatusCreated, nil, nil)
 	return
 }
 

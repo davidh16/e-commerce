@@ -39,7 +39,7 @@ func (r userRepository) SaveToken(token string) error {
 
 func (r userRepository) FindUserByEmailAddress(emailAddress string) (*models.User, error) {
 	var user models.User
-	result := r.Db().Where("email_address=?", emailAddress).First(&user).Preload("Role")
+	result := r.Db().Where("email_address=?", emailAddress).Preload("Role").First(&user)
 	if result.Error != nil {
 		return nil, result.Error
 	}

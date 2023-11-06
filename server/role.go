@@ -18,7 +18,7 @@ func (s *Server) CreateRole(w http.ResponseWriter, req *http.Request) {
 		returnResponse(w, http.StatusInternalServerError, err, nil)
 		return
 	}
-	returnResponse(w, http.StatusOK, nil, nil)
+	returnResponse(w, http.StatusCreated, nil, nil)
 	return
 }
 

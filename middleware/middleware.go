@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"e-commerce/config"
 	"fmt"
 	"github.com/go-redis/redis/v8"
 	"github.com/golang-jwt/jwt"
@@ -21,11 +22,17 @@ func InitializeMiddleware(redis *redis.Client) *Middleware {
 func (m *Middleware) AdminAuthMiddleware(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
+		cfg := config.GetConfig()
+
 		authHeader := r.Header.Get("Authorization")
+		if authHeader == "" {
+			w.WriteHeader(http.StatusUnauthorized)
+			return
+		}
 		token := strings.Split(authHeader, "Bearer ")[1]
 
 		tkn, err := jwt.Parse(token, func(token *jwt.Token) (any, error) {
-			return nil, nil
+			return []byte(cfg.SecretKey), nil
 		})
 		if err != nil {
 			if err == jwt.ErrSignatureInvalid {
