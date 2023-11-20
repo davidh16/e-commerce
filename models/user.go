@@ -11,6 +11,8 @@ type User struct {
 	Uuid         string    `json:"uuid" gorm:"unique;type:uuid; column:uuid;default:uuid_generate_v4()"`
 	EmailAddress string    `json:"email_address"`
 	Password     string    `json:"password"`
+	FirstName    string    `json:"first_name"`
+	LastName     string    `json:"last_name"`
 	IsActive     bool      `json:"is_active"`
 	CreatedAt    time.Time `json:"created_at"`
 	UpdatedAt    time.Time `json:"updated_at"`
@@ -31,6 +33,8 @@ func (u *User) Validate() error {
 var ValidationRules = map[string]string{
 	"EmailAddress": "required,email",
 	"Password":     "required,min=8",
+	"FirstName":    "required",
+	"LastName":     "required",
 }
 
 func (u *User) TableName() string {

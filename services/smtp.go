@@ -1,34 +1,58 @@
 package services
 
 import (
+	"bytes"
+	"e-commerce/config"
+	"e-commerce/templates"
 	"fmt"
+	"github.com/iancoleman/strcase"
+	"html/template"
 	"net/smtp"
+	"strings"
 )
 
-func (s Service) SendVerificationEmail(emailAddress string, verificationToken string) error {
+func (s Service) SendVerificationEmail(emailAddress string, firstName string, verificationToken string) error {
 
-	// Sender data.
-	from := "hey.clothing.shop@gmail.com"
-	appsPassword := "ihgceqqtzsoajrsp"
+	cfg := config.GetConfig()
+
+	templateName := "verification_email.html"
+
+	t1 := template.Must(template.New(templateName).Funcs(template.FuncMap{
+		"ToUpper":      strings.ToUpper,
+		"ToLower":      strings.ToLower,
+		"ToCamel":      strcase.ToCamel,
+		"ToLowerCamel": strcase.ToLowerCamel,
+	}).ParseFS(templates.Files, templateName))
+
+	type verificationEmail struct {
+		Name    string
+		Token   string
+		BaseUrl string
+	}
+
+	var tpl bytes.Buffer
+	if err := t1.Execute(&tpl, verificationEmail{
+		Name:    firstName,
+		Token:   verificationToken,
+		BaseUrl: cfg.BaseUrl,
+	}); err != nil {
+		fmt.Println("Email Had Not Been Sent Successfully!")
+	}
 
 	// Receiver email address.
 	to := []string{
 		emailAddress,
 	}
 
-	// smtp server configuration.
-	smtpHost := "smtp.gmail.com"
-	smtpPort := "587"
+	message := []byte("Subject: " + "Verifikacija email adrese" + "\r\n" +
+		"MIME-version: 1.0;\nContent-Type: text/html; charset=\"UTF-8\";\n\n" +
+		tpl.String())
 
-	messageText := "\nThis is your secret key : " + verificationToken + "\nWe strongly advise you to write it down in a physical form and to delete this email.\nWe also remind you that without this secret key, you will not be able to access rest of your passwords.\nThank you for using Password Locker."
-
-	// Message.
-	message := []byte("Subject: Password Locker Secret Key\r\n" + messageText)
 	// Authentication.
-	auth := smtp.PlainAuth("", from, appsPassword, smtpHost)
+	auth := smtp.PlainAuth("", cfg.SmtpFrom, cfg.GoogleAppPassword, cfg.SmtpHost)
 
 	// Sending email.
-	err := smtp.SendMail(smtpHost+":"+smtpPort, auth, from, to, message)
+	err := smtp.SendMail(cfg.SmtpHost+":"+cfg.SmtpPort, auth, cfg.SmtpFrom, to, message)
 	if err != nil {
 		return err
 	}

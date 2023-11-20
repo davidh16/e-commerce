@@ -22,6 +22,8 @@ func (s *Server) Register(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	user.RoleUuid = "9c8e2b1e-b839-4e49-937e-d460065eccb6"
+
 	// calling service to create user
 	_, token, err := s.service.CreateUser(user)
 	if err != nil {
@@ -29,7 +31,7 @@ func (s *Server) Register(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	err = s.service.SendVerificationEmail(user.EmailAddress, token.Token)
+	err = s.service.SendVerificationEmail(user.EmailAddress, user.FirstName, token.Token)
 	if err != nil {
 		log.Print("verification email have not been sent")
 		return

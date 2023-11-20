@@ -20,6 +20,11 @@ type Config struct {
 	SecretKey          string `env:"SECRET_KEY"`
 	StorageBucket      string `env:"STORAGE_BUCKET"`
 	StorageCredentials *google.Credentials
+	SmtpHost           string `env:"SMTP_HOST"`
+	SmtpPort           string `env:"SMTP_PORT"`
+	GoogleAppPassword  string `env:"GOOGLE_APP_PASSWORD"`
+	SmtpFrom           string `env:"SMTP_FROM"`
+	BaseUrl            string `env:"BASE_URL"`
 }
 
 func GetConfig() Config {

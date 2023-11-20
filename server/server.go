@@ -57,6 +57,7 @@ func (s *Server) InitRoutes(mw *mw.Middleware) {
 	s.router.HandleFunc("/login", s.Login).Methods("POST")
 	s.router.HandleFunc("/logout", mw.AuthMiddleware(s.Logout)).Methods("POST")
 	s.router.HandleFunc("/me", mw.AuthMiddleware(s.Me)).Methods("GET")
+	s.router.HandleFunc("/verify", s.VerifyAccount).Methods("POST")
 
 	// category routes
 	s.router.HandleFunc("/category", mw.AdminAuthMiddleware(s.CreateCategory)).Methods("POST")

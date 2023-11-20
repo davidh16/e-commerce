@@ -1,0 +1,29 @@
+<mjml>
+  <mj-head>
+    <mj-title>Verifikacija email adrese</mj-title>
+  </mj-head>
+  <mj-body>
+
+    <mj-section background-color="#fff" padding-top="20px" padding-bottom="20px">
+      <mj-column>
+        <mj-text font-size="28px" color="#4c4c4c" font-weight="bold">Verifikacija email adrese</mj-text>
+        <mj-text font-size="18px" color="#4c4c4c" line-height="28px" padding-top="10px">Poštovani/a, {{ .FirstName | ToCamel }}</mj-text>
+        <mj-text font-size="18px" color="#4c4c4c" line-height="28px" padding-top="10px">Kako biste uspješno dovršili registraciju na Hey clothing web shop, molimo vas da potvrdite vašu email adresu.
+
+Kliknite na poveznicu u nastavku kako biste potvrdili vašu email adresu.
+ </mj-text>
+        <mj-button background-color="#0099ff" color="#ffffff" font-size="20px" font-weight="bold" href="{{ .BaseUrl }}/auth/verify_email?token={{ .Token }}" padding="30px 0" border-radius="5px" inner-padding="15px 40px">Potvrdi email</mj-button>
+
+
+
+
+S poštovanjem,
+Vaš Hey clothing.
+ </mj-text>
+
+      </mj-column>
+    </mj-section>
+
+
+  </mj-body>
+</mjml>
