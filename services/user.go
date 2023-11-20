@@ -9,10 +9,10 @@ import (
 	"strings"
 )
 
-func (s Service) CreateUser(user *models.User) (*models.User, error) {
+func (s Service) CreateUser(user *models.User) (*models.User, *models.Token, error) {
 	err := user.Validate()
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
 	tx := s.userRepository.Db().Begin()
@@ -20,12 +20,42 @@ func (s Service) CreateUser(user *models.User) (*models.User, error) {
 	result := tx.Create(&user)
 	if result.Error != nil {
 		tx.Rollback()
-		return nil, result.Error
+		return nil, nil, result.Error
+	}
+
+	token, err := s.GenerateVerificationToken()
+	if err != nil {
+		tx.Rollback()
+		return nil, nil, err
 	}
 
 	tx.Commit()
 
+	return user, token, nil
+}
+
+func (s Service) VerifyUser(user *models.User) (*models.User, error) {
+	tx := s.userRepository.Db().Begin()
+
+	user.IsActive = true
+
+	result := tx.Where("uuid=?", user.Uuid).Save(&user)
+	if result.Error != nil {
+		tx.Rollback()
+		return nil, result.Error
+	}
+
+	tx.Commit()
 	return user, nil
+}
+
+func (s Service) GetUser(uuid string) (*models.User, error) {
+	var user models.User
+	result := s.userRepository.Db().Where("uuid").First(&user)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return &user, nil
 }
 
 func (s Service) ValidateCredentials(user models.User) (*models.User, error) {

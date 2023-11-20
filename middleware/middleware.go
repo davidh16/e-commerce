@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"e-commerce/config"
+	"e-commerce/services"
 	"fmt"
 	"github.com/go-redis/redis/v8"
 	"github.com/golang-jwt/jwt"
@@ -10,7 +11,8 @@ import (
 )
 
 type Middleware struct {
-	redis *redis.Client
+	redis   *redis.Client
+	service services.Service
 }
 
 func InitializeMiddleware(redis *redis.Client) *Middleware {
@@ -78,6 +80,22 @@ func (m *Middleware) AuthMiddleware(next http.HandlerFunc) http.HandlerFunc {
 			return
 		}
 		if !tkn.Valid {
+			w.WriteHeader(http.StatusUnauthorized)
+			return
+		}
+
+		var sub string
+		if claims, ok := tkn.Claims.(jwt.MapClaims); ok {
+			sub = fmt.Sprint(claims["sub"])
+		}
+
+		user, err := m.service.GetUser(sub)
+		if err != nil {
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
+
+		if !user.IsActive {
 			w.WriteHeader(http.StatusUnauthorized)
 			return
 		}

@@ -7,7 +7,11 @@ CREATE TABLE IF NOT EXISTS ${2%%.*} (
 	/*----------------------------*/
     -- extras
 
+
 );
+
+CREATE UNIQUE INDEX unique_${2%%.*}_uuid on ${2%%.*}(uuid);
+
 EOF
 
 cat << EOF > ./migrations/$1.down.sql

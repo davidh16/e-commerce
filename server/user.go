@@ -5,8 +5,10 @@ import (
 	"encoding/json"
 	"errors"
 	"golang.org/x/sync/errgroup"
+	"log"
 	"net/http"
 	"strings"
+	"time"
 )
 
 func (s *Server) Register(w http.ResponseWriter, req *http.Request) {
@@ -21,13 +23,17 @@ func (s *Server) Register(w http.ResponseWriter, req *http.Request) {
 	}
 
 	// calling service to create user
-	_, err = s.service.CreateUser(user)
+	_, token, err := s.service.CreateUser(user)
 	if err != nil {
 		returnResponse(w, http.StatusBadRequest, err, nil)
 		return
 	}
 
-	//TODO implement sending verification email
+	err = s.service.SendVerificationEmail(user.EmailAddress, token.Token)
+	if err != nil {
+		log.Print("verification email have not been sent")
+		return
+	}
 
 	returnResponse(w, http.StatusCreated, nil, nil)
 	return
@@ -130,4 +136,51 @@ func (s *Server) Logout(w http.ResponseWriter, req *http.Request) {
 
 	returnResponse(w, http.StatusOK, nil, nil)
 	return
+}
+
+func (s *Server) VerifyAccount(w http.ResponseWriter, req *http.Request) {
+	var tokenString string
+	err := json.NewDecoder(req.Body).Decode(&tokenString)
+	if err != nil {
+		returnResponse(w, http.StatusBadRequest, err, nil)
+		return
+	}
+
+	token, err := s.service.GetToken(tokenString)
+	if err != nil {
+		returnResponse(w, http.StatusInternalServerError, err, nil)
+		return
+	}
+
+	if token.IsUsed != false {
+		returnResponse(w, http.StatusBadRequest, errors.New("tokes had been already used"), nil)
+		return
+	}
+
+	if time.Now().After(token.ExpiresAt) {
+		returnResponse(w, http.StatusBadRequest, errors.New("tokes had expired"), nil)
+		return
+	}
+
+	_, err = s.service.UpdateVerificationToken(token)
+	if err != nil {
+		returnResponse(w, http.StatusInternalServerError, err, nil)
+		return
+	}
+
+	user, err := s.service.GetUser(token.UserUuid)
+	if err != nil {
+		returnResponse(w, http.StatusInternalServerError, err, nil)
+		return
+	}
+
+	_, err = s.service.VerifyUser(user)
+	if err != nil {
+		returnResponse(w, http.StatusInternalServerError, err, nil)
+		return
+	}
+
+	returnResponse(w, http.StatusOK, err, nil)
+	return
+
 }

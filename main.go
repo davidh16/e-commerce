@@ -29,6 +29,7 @@ func main() {
 	addressRepo := repository.NewAddressRepository(postgres)
 	paymentInfoRepo := repository.NewPaymentInfoRepository(postgres)
 	roleRepo := repository.NewRoleRepository(postgres)
+	verificationTokenRepo := repository.NewVerificationTokenRepository(postgres)
 
 	// creating service and injecting repository in it
 	svc := services.NewService(
@@ -41,6 +42,7 @@ func main() {
 		addressRepo,
 		paymentInfoRepo,
 		roleRepo,
+		verificationTokenRepo,
 	)
 
 	r := mux.NewRouter()

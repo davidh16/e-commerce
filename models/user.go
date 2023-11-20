@@ -8,14 +8,14 @@ import (
 )
 
 type User struct {
-	Uuid          string    `json:"uuid" gorm:"unique;type:uuid; column:uuid;default:uuid_generate_v4()"`
-	EmailAddress  string    `json:"email_address"`
-	Password      string    `json:"password"`
-	AccountStatus int       `json:"account_status"`
-	CreatedAt     time.Time `json:"created_at"`
-	UpdatedAt     time.Time `json:"updated_at"`
-	RoleUuid      string    `json:"role_uuid"`
-	Role          Role      `json:"-" gorm:"foreignKey:RoleUuid;references:Uuid"`
+	Uuid         string    `json:"uuid" gorm:"unique;type:uuid; column:uuid;default:uuid_generate_v4()"`
+	EmailAddress string    `json:"email_address"`
+	Password     string    `json:"password"`
+	IsActive     bool      `json:"is_active"`
+	CreatedAt    time.Time `json:"created_at"`
+	UpdatedAt    time.Time `json:"updated_at"`
+	RoleUuid     string    `json:"role_uuid"`
+	Role         Role      `json:"-" gorm:"foreignKey:RoleUuid;references:Uuid"`
 }
 
 func (u *User) Validate() error {

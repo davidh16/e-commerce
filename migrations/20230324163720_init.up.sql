@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS "refresh_tokens"(
 );
 
 CREATE TABLE IF NOT EXISTS "roles"(
-    uuid uuid not null DEFAULT uuid_generate_v4() PRIMARY KEY ,
+    uuid uuid not null DEFAULT uuid_generate_v4() PRIMARY KEY,
     name varchar
 );
 
