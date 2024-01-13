@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"github.com/go-redis/redis/v8"
 	"github.com/gorilla/mux"
+	"log"
 	"net/http"
 )
 
@@ -31,7 +32,9 @@ type Server struct {
 	router  *mux.Router
 }
 
-func NewServer(s services.Service, cfg config.Config, redis *redis.Client, r *mux.Router) Server {
+func NewServer(s services.Service, cfg config.Config, redis *redis.Client) Server {
+
+	r := mux.NewRouter()
 
 	middleware := mw.InitializeMiddleware(redis)
 
@@ -93,4 +96,14 @@ func (s *Server) InitRoutes(mw *mw.Middleware) {
 	s.router.HandleFunc("/cart/add", mw.AuthMiddleware(s.AddItemToTheCart)).Methods("POST")
 	s.router.HandleFunc("/cart", mw.AuthMiddleware(s.GetCart)).Methods("Get")
 	s.router.HandleFunc("/cart/remove", mw.AuthMiddleware(s.RemoveItemFromTheCart)).Methods("POST")
+}
+
+func (s *Server) Serve() {
+	err := http.ListenAndServe(s.config.Port, s.router)
+	if err != nil {
+		log.Println(err)
+		return
+	}
+
+	log.Println("server running on port: ", s.config.Port)
 }

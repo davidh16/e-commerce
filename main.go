@@ -6,9 +6,6 @@ import (
 	"e-commerce/repository"
 	"e-commerce/server"
 	"e-commerce/services"
-	"fmt"
-	"github.com/gorilla/mux"
-	"net/http"
 )
 
 func main() {
@@ -45,16 +42,9 @@ func main() {
 		verificationTokenRepo,
 	)
 
-	r := mux.NewRouter()
-
 	// creating server and injecting service in it
-	server.NewServer(svc, cfg, redis, r)
+	srv := server.NewServer(svc, cfg, redis)
 
-	_ = fmt.Sprintf("server listening on port %s", cfg.Port)
-
-	err := http.ListenAndServe(cfg.Port, r)
-	if err != nil {
-		return
-	}
+	srv.Serve()
 
 }
